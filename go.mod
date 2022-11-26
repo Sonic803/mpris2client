@@ -1,4 +1,4 @@
-module github.com/hrfee/mpris2client
+module github.com/Sonic803/mpris2client
 
 go 1.15
 

@@ -421,6 +421,8 @@ func (pl *Mpris2) New(name string) {
 
 func (pl *Mpris2) Sort() {
 	sort.Sort(pl.List)
+	fmt.Println(len(pl.List))
+	
 	if len(pl.List)>0 && !pl.List[pl.Current].Playing && pl.List[0].Playing{
 		pl.Current = 0
 	}

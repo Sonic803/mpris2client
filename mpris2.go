@@ -438,7 +438,7 @@ func (pl *Mpris2) Sort() {
 func (pl *Mpris2) Refresh() {
 	for i := range pl.List {
 		var a=pl.List[i].Refresh()
-		if a {
+		if a == 1{
 			pl.Current = uint(i)
 		}
 	}

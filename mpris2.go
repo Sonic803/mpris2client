@@ -108,14 +108,11 @@ func (p *Player) Refresh() (err error) {
 		return
 	}
 	strVal := val.String()
+	a=0
 	if strings.Contains(strVal, "Playing") {
-		// if it wasn't playing before we make it the current player
-		if !p.Playing {
-			p.conn.BusObject().Call("org.freedesktop.DBus.SetProperty", 0, "org.mpris.MediaPlayer2", "CurrentPlayer", dbus.MakeVariant(p.FullName))
-			//
-		}
 		p.Playing = true
 		p.Stopped = false
+		a=1
 	} else if strings.Contains(strVal, "Paused") {
 		p.Playing = false
 		p.Stopped = false
@@ -177,7 +174,7 @@ func (p *Player) Refresh() (err error) {
 	default:
 		p.Length = 0
 	}
-	return nil
+	return a
 }
 
 func µsToString(µs int64) string {
@@ -440,7 +437,10 @@ func (pl *Mpris2) Sort() {
 
 func (pl *Mpris2) Refresh() {
 	for i := range pl.List {
-		pl.List[i].Refresh()
+		a=pl.List[i].Refresh()
+		if a {
+			pl.current = uint(i)
+		}
 	}
 	pl.Messages <- Message{Name: "refresh", Value: ""}
 }

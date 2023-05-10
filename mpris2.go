@@ -114,7 +114,6 @@ func (p *Player) Refresh() (err error) {
 			p.conn.BusObject().Call("org.freedesktop.DBus.SetProperty", 0, "org.mpris.MediaPlayer2", "CurrentPlayer", dbus.MakeVariant(p.FullName))
 			fmt.Println("Hai attivato il player: " + p.FullName)
 		}
-		p.Playing = true
 		p.Stopped = false
 	} else if strings.Contains(strVal, "Paused") {
 		p.Playing = false

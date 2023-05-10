@@ -437,9 +437,9 @@ func (pl *Mpris2) Sort() {
 
 func (pl *Mpris2) Refresh() {
 	for i := range pl.List {
-		a=pl.List[i].Refresh()
+		var a=pl.List[i].Refresh()
 		if a {
-			pl.current = uint(i)
+			pl.Current = uint(i)
 		}
 	}
 	pl.Messages <- Message{Name: "refresh", Value: ""}

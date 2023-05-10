@@ -110,9 +110,11 @@ func (p *Player) Refresh() bool {
 	}
 	strVal := val.String()
 	if strings.Contains(strVal, "Playing") {
+		if p.Playing == false {
+			a=true
+		}
 		p.Playing = true
 		p.Stopped = false
-		a=true
 	} else if strings.Contains(strVal, "Paused") {
 		p.Playing = false
 		p.Stopped = false

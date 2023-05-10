@@ -93,8 +93,8 @@ func (p *Player) String() string {
 }
 
 // Refresh grabs playback info.
-func (p *Player) Refresh() int {
-	var a=0
+func (p *Player) Refresh() bool {
+	var a=false
 	val, err := p.Player.GetProperty(INTERFACE + ".Player.PlaybackStatus")
 	if err != nil {
 		p.Playing = false
@@ -112,7 +112,7 @@ func (p *Player) Refresh() int {
 	if strings.Contains(strVal, "Playing") {
 		p.Playing = true
 		p.Stopped = false
-		a=1
+		a=true
 	} else if strings.Contains(strVal, "Paused") {
 		p.Playing = false
 		p.Stopped = false
@@ -438,7 +438,7 @@ func (pl *Mpris2) Sort() {
 func (pl *Mpris2) Refresh() {
 	for i := range pl.List {
 		var a=pl.List[i].Refresh()
-		if a == 1{
+		if a {
 			pl.Current = uint(i)
 		}
 	}

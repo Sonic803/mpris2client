@@ -93,7 +93,8 @@ func (p *Player) String() string {
 }
 
 // Refresh grabs playback info.
-func (p *Player) Refresh() (err error) {
+func (p *Player) Refresh() int {
+	var a=0
 	val, err := p.Player.GetProperty(INTERFACE + ".Player.PlaybackStatus")
 	if err != nil {
 		p.Playing = false
@@ -105,10 +106,9 @@ func (p *Player) Refresh() (err error) {
 		p.Album = ""
 		p.TrackNumber = -1
 		p.Length = 0
-		return
+		return a
 	}
 	strVal := val.String()
-	var a=0
 	if strings.Contains(strVal, "Playing") {
 		p.Playing = true
 		p.Stopped = false
@@ -129,7 +129,7 @@ func (p *Player) Refresh() (err error) {
 		p.Album = ""
 		p.TrackNumber = -1
 		p.Length = 0
-		return
+		return a
 	}
 	p.metadata = metadata.Value().(map[string]dbus.Variant)
 	switch artist := p.metadata["xesam:artist"].Value().(type) {

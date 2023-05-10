@@ -109,6 +109,10 @@ func (p *Player) Refresh() (err error) {
 	}
 	strVal := val.String()
 	if strings.Contains(strVal, "Playing") {
+		// if it wasn't playing before we make it the current player
+		if !p.Playing {
+			p.conn.BusObject().Call("org.freedesktop.DBus.SetProperty", 0, "org.mpris.MediaPlayer2", "CurrentPlayer", dbus.MakeVariant(p.FullName))
+		}
 		p.Playing = true
 		p.Stopped = false
 	} else if strings.Contains(strVal, "Paused") {

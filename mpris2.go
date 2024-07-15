@@ -93,7 +93,8 @@ func (p *Player) String() string {
 }
 
 // Refresh grabs playback info.
-func (p *Player) Refresh() (err error) {
+func (p *Player) Refresh() bool {
+	var a=false
 	val, err := p.Player.GetProperty(INTERFACE + ".Player.PlaybackStatus")
 	if err != nil {
 		p.Playing = false
@@ -105,10 +106,13 @@ func (p *Player) Refresh() (err error) {
 		p.Album = ""
 		p.TrackNumber = -1
 		p.Length = 0
-		return
+		return a
 	}
 	strVal := val.String()
 	if strings.Contains(strVal, "Playing") {
+		if p.Playing == false {
+			a=true
+		}
 		p.Playing = true
 		p.Stopped = false
 	} else if strings.Contains(strVal, "Paused") {
@@ -127,7 +131,7 @@ func (p *Player) Refresh() (err error) {
 		p.Album = ""
 		p.TrackNumber = -1
 		p.Length = 0
-		return
+		return a
 	}
 	p.metadata = metadata.Value().(map[string]dbus.Variant)
 	switch artist := p.metadata["xesam:artist"].Value().(type) {
@@ -172,7 +176,7 @@ func (p *Player) Refresh() (err error) {
 	default:
 		p.Length = 0
 	}
-	return nil
+	return a
 }
 
 func µsToString(µs int64) string {
@@ -420,13 +424,25 @@ func (pl *Mpris2) New(name string) {
 }
 
 func (pl *Mpris2) Sort() {
-	sort.Sort(pl.List)
-	pl.Current = 0
+	if len(pl.List)>0{
+		sort.Sort(pl.List)
+
+		if !pl.List[pl.Current].Playing && pl.List[0].Playing{
+			pl.Current = 0
+		}
+	}else{
+		pl.Current = 0
+
+	}
+
 }
 
 func (pl *Mpris2) Refresh() {
 	for i := range pl.List {
-		pl.List[i].Refresh()
+		var a=pl.List[i].Refresh()
+		if a {
+			pl.Current = uint(i)
+		}
 	}
 	pl.Messages <- Message{Name: "refresh", Value: ""}
 }
